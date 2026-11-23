@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>小数のかけ算｜5年生・算数</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="https://tt-sensei.github.io/edu-effects/css/edu-effects-library.css" />
+    <style>
+      :root {
+        --bg: #f7f4fe;
+        --ink: #2c2542;
+        --muted: #6f6890;
+        --line: #ddd5f2;
+        --card: #ffffff;
+        --primary: #6c4fd0;
+        --primary-dark: #543bb0;
+        --primary-soft: #ece7fb;
+        --amber: #f5a623;
+        --good: #1e9e57;
+        --good-soft: #e2f5e9;
+        --bad: #d9534f;
+        --bad-soft: #fbe9e8;
+        --riku: #2e9e5b;
+        --riku-soft: #e4f4ea;
+        --tsuki: #dd8a12;
+        --tsuki-soft: #fdf0da;
+        --kai: #0f9488;
+        --kai-soft: #def3f0;
+        --saku: #d6567f;
+        --saku-soft: #fbe7ee;
+        --radius: 18px;
+        --cell: 46px;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
+        -webkit-text-size-adjust: 100%;
+      }
+      .wrap { max-width: 1120px; margin: 0 auto; padding: 14px 16px 36px; }
+      .hidden { display: none !important; }
+
+      header.top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 4px 0 14px; }
+      header.top h1 { font-size: clamp(24px, 4.6vw, 34px); margin: 0; letter-spacing: .02em; }
+      .chip-grade { background: var(--primary); color: #fff; border-radius: 999px; padding: 5px 14px; font-size: 14px; font-weight: 700; }
+      .sound-toggle { margin-left: auto; border: 2px solid var(--line); background: #fff; border-radius: 999px; padding: 8px 16px; font-size: 15px; font-weight: 700; cursor: pointer; color: var(--ink); }
+      .sound-toggle:active { transform: scale(.97); }
+
+      .home-lead { display: flex; gap: 18px; align-items: center; background: var(--card); border: 2px solid var(--line); border-radius: var(--radius); padding: 16px 20px; }
+      .home-lead-copy { flex: 1; min-width: 260px; }
+      .lead { font-size: 18px; line-height: 1.7; margin: 0 0 8px; }
+      .home-group { width: 300px; max-width: 42%; height: auto; border-radius: 12px; }
+      .map-links { display: flex; gap: 8px; flex-wrap: wrap; }
+      .map-links a, .learning-map-link { color: var(--primary-dark); font-weight: 700; font-size: 14px; text-decoration: none; border-bottom: 2px solid var(--primary-soft); }
+
+      .section-label { font-size: 20px; margin: 20px 0 10px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+      .type-card { text-align: left; border: 3px solid var(--line); border-top: 10px solid var(--tc, var(--primary)); background: #fff; border-radius: var(--radius); padding: 14px 16px; cursor: pointer; font: inherit; color: var(--ink); }
+      .type-card:active { transform: scale(.98); }
+      .type-card .tc-label { font-size: 19px; font-weight: 800; display: block; margin-bottom: 4px; }
+      .type-card .tc-desc { font-size: 14px; color: var(--muted); line-height: 1.55; display: block; }
+      .type-card .tc-navi { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; font-weight: 700; color: var(--tc, var(--primary)); }
+      .type-card .tc-navi img { width: 34px; height: 44px; object-fit: contain; }
+
+      .learning-note { margin-top: 20px; background: var(--card); border: 2px solid var(--line); border-radius: var(--radius); padding: 16px 20px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+      .learning-note h2 { margin: 2px 0 6px; font-size: 20px; }
+      .learning-note p { margin: 0 0 6px; line-height: 1.65; }
+      .learning-eyebrow { color: var(--primary); font-weight: 800; font-size: 12px; letter-spacing: .14em; margin: 0; }
+      .point-demo { font-size: 17px; line-height: 2; background: var(--primary-soft); border-radius: 12px; padding: 10px 18px; }
+      .point-demo b { color: var(--primary-dark); }
+      .point-demo .pd { color: var(--bad); font-weight: 900; }
+
+      .menu-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+      .menu-btn { position: relative; text-align: left; border: 3px solid var(--primary); background: #fff; color: var(--ink); border-radius: var(--radius); padding: 14px 16px; font: inherit; font-size: 18px; font-weight: 800; cursor: pointer; }
+      .menu-btn small { display: block; font-size: 13px; font-weight: 500; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+      .menu-btn .count { position: absolute; top: -10px; right: 12px; background: var(--bad); color: #fff; border-radius: 999px; padding: 2px 10px; font-size: 14px; }
+      footer.note { margin-top: 18px; color: var(--muted); font-size: 13px; text-align: center; }
+
+      /* ---------- quiz ---------- */
+      .back-row { margin-bottom: 10px; }
+      .btn { border: 2px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px; padding: 10px 22px; font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; }
+      .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+      .btn:active { transform: scale(.97); }
+      .panel { background: var(--card); border: 2px solid var(--line); border-radius: var(--radius); padding: 16px 20px; }
+      .quiz-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px; }
+      .progress-label { font-weight: 800; font-size: 16px; color: var(--muted); white-space: nowrap; }
+      .progress-bar { height: 10px; background: var(--primary-soft); border-radius: 999px; overflow: hidden; margin: 6px 0 12px; }
+      #progress-fill { height: 100%; background: var(--primary); border-radius: 999px; transition: width .3s; }
+      .navi { display: inline-flex; align-items: center; gap: 10px; }
+      .navi-avatar { display: inline-flex; width: 44px; height: 54px; align-items: flex-end; justify-content: center; overflow: hidden; }
+      .navi-avatar-img { height: 54px; width: auto; }
+      .navi .hint { background: var(--primary-soft); border-radius: 12px; padding: 7px 12px; font-size: 15px; font-weight: 700; line-height: 1.45; }
+
+      .quiz-layout { display: grid; grid-template-columns: 1fr 300px; gap: 18px; align-items: start; }
+      .problem { font-size: 34px; font-weight: 900; text-align: center; letter-spacing: .04em; margin: 4px 0 10px; }
+      .problem .hl { color: var(--bad); }
+      .step-label { display: inline-block; background: var(--primary); color: #fff; font-size: 14px; font-weight: 800; border-radius: 999px; padding: 4px 14px; margin-bottom: 6px; }
+      .step-prompt { font-size: 18px; font-weight: 700; line-height: 1.6; margin-bottom: 10px; }
+      .choices { display: flex; gap: 10px; flex-wrap: wrap; }
+      .choice-btn { border: 3px solid var(--primary); background: #fff; color: var(--primary-dark); border-radius: 14px; padding: 12px 20px; font: inherit; font-size: 20px; font-weight: 800; cursor: pointer; min-width: 92px; }
+      .choice-btn:active { transform: scale(.96); }
+      .choice-btn.picked { background: var(--primary); color: #fff; }
+
+      /* hissan */
+      .hissan { display: flex; justify-content: center; margin: 2px 0 4px; }
+      .h-grid { display: grid; gap: 0 2px; font-variant-numeric: tabular-nums; }
+      .h-cell { width: var(--cell); height: var(--cell); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 800; border-radius: 8px; }
+      .h-cell.sign { font-size: 24px; color: var(--muted); width: 30px; }
+      .h-cell.carry { height: 22px; font-size: 15px; color: var(--bad); font-weight: 800; }
+      .h-cell.target { background: var(--amber-soft, #fdf0d5); outline: 3px solid var(--amber); animation: pulse 1s infinite; }
+      .h-cell.filled { color: var(--ink); }
+      .h-cell.dim { color: #b9b2d6; }
+      .h-line { border-bottom: 3px solid var(--ink); height: 6px; }
+      @keyframes pulse { 0%,100% { outline-offset: 0; } 50% { outline-offset: 2px; } }
+      .h-note { text-align: center; color: var(--muted); font-size: 14px; min-height: 20px; }
+
+      /* point placement */
+      .point-stage { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 6px 0; }
+      .point-row { display: flex; align-items: center; gap: 0; }
+      .p-digit { width: 54px; height: 64px; border: 3px solid var(--line); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 900; background: #fff; }
+      .p-digit.zero { color: #b9b2d6; }
+      .p-gap { width: 26px; height: 64px; border: none; background: transparent; cursor: pointer; position: relative; padding: 0; }
+      .p-gap::after { content: ""; position: absolute; left: 50%; top: 8px; bottom: 8px; width: 4px; margin-left: -2px; border-radius: 2px; background: var(--primary-soft); }
+      .p-gap:hover::after, .p-gap:focus-visible::after { background: var(--amber); }
+      .p-gap.placed::after { background: transparent; }
+      .p-point { font-size: 40px; font-weight: 900; color: var(--bad); width: 26px; text-align: center; }
+      .p-trim { font-size: 15px; color: var(--muted); }
+      .p-trim s { color: var(--bad); }
+
+      .quiz-controls { display: flex; flex-direction: column; gap: 12px; }
+      .answer-box { border: 3px dashed var(--line); border-radius: 14px; min-height: 62px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; color: var(--primary-dark); text-align: center; padding: 6px; line-height: 1.35; }
+      .answer-box.filled { border-style: solid; border-color: var(--primary); background: var(--primary-soft); }
+      .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .keypad button { border: 2px solid var(--line); background: #fff; border-radius: 14px; padding: 13px 0; font: inherit; font-size: 22px; font-weight: 800; cursor: pointer; color: var(--ink); }
+      .keypad button:active { background: var(--primary-soft); transform: scale(.96); }
+      .keypad button:disabled { opacity: .35; cursor: default; }
+      .actions { display: flex; gap: 10px; }
+      .actions .btn { flex: 1; padding: 13px 10px; font-size: 18px; }
+
+      .feedback { margin-top: 14px; border-radius: 14px; padding: 10px 14px; min-height: 76px; background: #faf8ff; border: 2px solid var(--line); }
+      .feedback.good { background: var(--good-soft); border-color: var(--good); }
+      .feedback.bad { background: var(--bad-soft); border-color: var(--bad); }
+      .feedback-inner { display: flex; gap: 12px; align-items: center; }
+      .feedback-navi .navi-avatar { width: 46px; height: 58px; }
+      .feedback-navi .navi-avatar-img { height: 58px; }
+      .verdict { font-size: 19px; font-weight: 900; margin-bottom: 2px; }
+      .feedback-copy { font-size: 15.5px; line-height: 1.6; flex: 1; }
+
+      .big-result { font-size: 30px; font-weight: 900; text-align: center; margin: 10px 0 4px; }
+      .result-msg { text-align: center; color: var(--muted); line-height: 1.7; margin: 0 0 16px; }
+      #view-result .actions { justify-content: center; }
+      #view-result .actions .btn { flex: 0 1 auto; padding: 12px 26px; }
+
+      .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+      .stat-card { background: #fff; border: 2px solid var(--line); border-top: 10px solid var(--tc, var(--primary)); border-radius: var(--radius); padding: 14px 16px; }
+      .stat-card h3 { margin: 0 0 6px; font-size: 17px; }
+      .stat-card p { margin: 2px 0; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
+      .stat-card p b { color: var(--ink); }
+
+      .anim-pop { animation: pop .35s ease; }
+      @keyframes pop { 0% { transform: scale(.6); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+      .anim-shake { animation: shake .35s ease; }
+      @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-7px); } 75% { transform: translateX(7px); } }
+
+      @media (max-width: 900px) {
+        .quiz-layout { grid-template-columns: 1fr; }
+        .home-group { display: none; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .anim-pop, .anim-shake, .h-cell.target { animation: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <!-- ============ トップ画面 ============ -->
+      <section id="view-top">
+        <header class="top">
+          <h1>小数の かけ算</h1>
+          <span class="chip-grade">5年生・算数</span>
+          <button class="sound-toggle" id="btn-sound" aria-pressed="true">🔊 音 ON</button>
+        </header>
+
+        <div class="home-lead">
+          <div class="home-lead-copy">
+            <p class="lead">まずは 整数の かけ算と 同じように 計算して、さいごに 小数点の 位置を 自分で 確かめよう。1回は 10問です。</p>
+            <nav class="map-links" aria-label="学びの地図">
+              <a href="https://tt-sensei.github.io/jp-learning-taxonomy/site/v2/#topic=jp.elem.math.decimal-multiply-divide" target="_blank" rel="noopener">小数のかけ算・わり算（学びの地図）</a>
+            </nav>
+          </div>
+          <img class="home-group" id="topScene" src="https://tt-sensei.github.io/navi-character-/assets/groups/learning/trio-learning-discussion-riku-saku-kai.png" alt="" aria-hidden="true" decoding="async" />
+          <script>
+            (function () {
+              var scenes = [
+                "https://tt-sensei.github.io/navi-character-/assets/groups/learning/trio-learning-discussion-riku-saku-kai.png",
+                "https://tt-sensei.github.io/navi-character-/assets/groups/learning/trio-learning-graph-kai-tsuki-nami.png"
+              ];
+              var img = document.getElementById("topScene");
+              if (img) img.src = scenes[Math.floor(Math.random() * scenes.length)];
+            })();
+          </script>
+        </div>
+
+        <h2 class="section-label">れんしゅうを えらぼう</h2>
+        <div class="grid" id="type-grid"></div>
+
+        <section class="learning-note" aria-labelledby="point-heading">
+          <div>
+            <p class="learning-eyebrow">CALCULATION POINT</p>
+            <h2 id="point-heading">小数点の 位置の 決め方</h2>
+            <p>小数点は 気にせず 整数の かけ算をしてから、2つの数の「小数点の 右の けた数」を 合わせた分だけ、答えを 右から 数えて 小数点を 打ちます。</p>
+            <a class="learning-map-link" href="https://tt-sensei.github.io/jp-learning-taxonomy/site/v2/#topic=jp.elem.math.decimal-multiply-divide" target="_blank" rel="noopener">5年生の学びを 学びの地図で見る ↗</a>
+          </div>
+          <div class="point-demo" role="img" aria-label="2.3かける1.4の例。23かける14は322。小数点の右は1けたと1けたで合わせて2けた。右から2けたで3.22">
+            2.3 × 1.4 → まず <b>23 × 14 ＝ 322</b><br />
+            小数点の 右は <b>1けた</b> と <b>1けた</b>、合わせて <b>2けた</b><br />
+            右から 2けたの ところに <span class="pd">.</span> → <b>3<span class="pd">.</span>22</b>
+          </div>
+        </section>
+
+        <div class="menu-row">
+          <button class="menu-btn" id="btn-tokkun">
+            とっくん（まちがい直し）<span class="count hidden" id="tokkun-count">0</span>
+            <small>まちがえた 問題に もう一度 チャレンジ。正解すると きえるよ。敵も タイマーも ないよ。</small>
+          </button>
+          <button class="menu-btn" id="btn-records">
+            れんしゅうの きろく
+            <small>種類ごとに、といた 問題数と ノーミス数が 見られます。</small>
+          </button>
+        </div>
+
+        <footer class="note">まちがえた 問題と きろくは、この タブレットの 中だけに 保存されます。</footer>
+      </section>
+
+      <!-- ============ 練習画面 ============ -->
+      <section id="view-quiz" class="hidden">
+        <div class="back-row">
+          <button class="btn ghost" id="btn-quit">← トップへ もどる</button>
+        </div>
+        <div class="panel">
+          <div class="quiz-head">
+            <span id="quiz-navi"></span>
+            <span class="progress-label" id="progress-label" aria-live="polite">1 / 10 もん</span>
+          </div>
+          <div class="progress-bar" aria-hidden="true"><div id="progress-fill" style="width:0%"></div></div>
+
+          <div class="quiz-layout">
+            <div class="quiz-workspace">
+              <div class="problem" id="problem-text">2.3 × 1.4 ＝ ？</div>
+              <div id="stage-area"></div>
+            </div>
+
+            <div class="quiz-controls">
+              <div class="answer-box" id="answer-box">ステップに したがって 進めよう</div>
+              <div class="keypad" id="keypad">
+                <button type="button" data-key="1">1</button>
+                <button type="button" data-key="2">2</button>
+                <button type="button" data-key="3">3</button>
+                <button type="button" data-key="4">4</button>
+                <button type="button" data-key="5">5</button>
+                <button type="button" data-key="6">6</button>
+                <button type="button" data-key="7">7</button>
+                <button type="button" data-key="8">8</button>
+                <button type="button" data-key="9">9</button>
+                <button type="button" data-key="." aria-label="小数点" disabled>.</button>
+                <button type="button" data-key="0">0</button>
+                <button type="button" class="util" data-key="back" aria-label="もどる" disabled>けす</button>
+              </div>
+              <div class="actions">
+                <button class="btn primary hidden" id="btn-next">つぎへ →</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="feedback" id="feedback" role="status" aria-live="polite">
+            <div class="feedback-inner">
+              <span class="feedback-navi" id="feedback-navi" aria-hidden="true"></span>
+              <div class="feedback-copy">
+                <div class="verdict" id="feedback-verdict"></div>
+                <div id="feedback-body"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 結果画面 ============ -->
+      <section id="view-result" class="hidden">
+        <div class="panel">
+          <p class="big-result" id="result-title">10もん中 8もん ノーミス！</p>
+          <p class="result-msg" id="result-msg"></p>
+          <div class="actions">
+            <button class="btn primary" id="btn-again">もう一度 れんしゅう</button>
+            <button class="btn ghost" id="btn-result-tokkun">とっくんへ</button>
+            <button class="btn ghost" id="btn-result-top">トップへ</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 記録画面 ============ -->
+      <section id="view-records" class="hidden">
+        <div class="back-row">
+          <button class="btn ghost" id="btn-records-back">← トップへ もどる</button>
+        </div>
+        <div class="panel" style="background:transparent;border:none;padding:0;">
+          <h2 style="font-size:24px;margin:4px 0 14px;">れんしゅうの きろく</h2>
+          <div class="stat-grid" id="stat-grid"></div>
+        </div>
+      </section>
+
+    </div>
+    <script>
+      "use strict";
+
+      /* ================= 種類の定義 ================= */
+      var TYPES = {
+        review: {
+          label: "ふくしゅう：小数 × 整数",
+          desc: "4年生で 習った、小数に 整数を かける かけ算",
+          navi: "りく", naviId: "riku", color: "var(--riku)",
+          hint: "整数の かけ算と 同じように 計算しよう",
+          explain: "小数点を ないものとして 整数の かけ算を してから、もとの 小数の 小数点の 位置に もどします。"
+        },
+        basic: {
+          label: "小数第1位 × 小数第1位",
+          desc: "2.3 × 1.4 のような、基本の 小数 × 小数",
+          navi: "つき", naviId: "tsuki", color: "var(--tsuki)",
+          hint: "小数点の 右の けた数を 合わせるのが ポイント",
+          explain: "まず 整数どうしの かけ算を します。答えの 小数点は、2つの数の 小数点の 右の けた数を 合わせた分だけ、右から 数えた 位置に 打ちます。"
+        },
+        step2: {
+          label: "小数第2位 × 小数",
+          desc: "0.25 × 1.6 や 3.14 × 2.6 のような かけ算",
+          navi: "かい", naviId: "kai", color: "var(--kai)",
+          hint: "けた数が 多くても、手順は 同じだよ",
+          explain: "小数第2位まで あっても 手順は 同じです。けたを よく 数えて、小数点の 位置を 確かめましょう。"
+        },
+        mix: {
+          label: "ミックス チャレンジ",
+          desc: "答えが 整数に なる、0を 消す、0を 補う 問題も 入った ミックス",
+          navi: "さく", naviId: "saku", color: "var(--saku)",
+          hint: "見当と 小数点の 位置を よく 確かめよう",
+          explain: "いろいろな 型が まざっています。答えが 整数に なったり、さいごの 0を 消したり、0を 補ったりする 問題に 気をつけましょう。"
+        }
+      };
+      var TYPE_KEYS = ["review", "basic", "step2", "mix"];
+
+      /* ================= 保存（この端末の中だけ） ================= */
+      var LS_MISTAKES = "shosuKakezan.mistakes.v1";
+      var LS_STATS = "shosuKakezan.stats.v1";
+      var LS_SETTINGS = "shosuKakezan.settings.v1";
+
+      function loadJSON(key, fallback) {
+        try {
+          var raw = localStorage.getItem(key);
+          if (!raw) return fallback;
+          var v = JSON.parse(raw);
+          return v == null ? fallback : v;
+        } catch (e) { return fallback; }
+      }
+      function saveJSON(key, value) {
+        try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+      }
+      function loadMistakes() {
+        var m = loadJSON(LS_MISTAKES, []);
+        return Array.isArray(m) ? m : [];
+      }
+      function loadStats() {
+        var s = loadJSON(LS_STATS, {});
+        TYPE_KEYS.forEach(function (k) {
+          if (!s[k] || typeof s[k].total !== "number") s[k] = { total: 0, correct: 0 };
+        });
+        return s;
+      }
+
+      /* ---------- 設定（音の ON/OFF） ---------- */
+      function loadSettings() {
+        var s = loadJSON(LS_SETTINGS, null);
+        return { sound: !s || s.sound !== false };
+      }
+      var settings = loadSettings();
+      function saveSettings() { saveJSON(LS_SETTINGS, settings); }
+      function renderSoundBtn() {
+        var b = document.getElementById("btn-sound");
+        if (!b) return;
+        b.textContent = settings.sound ? "🔊 音 ON" : "🔇 音 OFF";
+        b.setAttribute("aria-pressed", settings.sound ? "true" : "false");
+      }
+
+      /* ---------- 音（sounds-recipe- のレシピ。読み込めなくても学習は続ける） ---------- */
+      var soundList = [];
+      try {
+        import("https://tt-sensei.github.io/sounds-recipe-/sounds.js")
+          .then(function (m) { soundList = Array.isArray(m.soundList) ? m.soundList : []; })
+          .catch(function () { soundList = []; });
+      } catch (e) { soundList = []; }
+      var audioCtx = null;
+      function playSound(id) {
+        if (!settings.sound || !soundList.length) return;
+        var recipe = null;
+        for (var i = 0; i < soundList.length; i++) {
+          if (soundList[i].id === id) { recipe = soundList[i]; break; }
+        }
+        if (!recipe) return;
+        try {
+          var AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return;
+          if (!audioCtx) audioCtx = new AC();
+          if (audioCtx.state === "suspended") audioCtx.resume();
+          recipe.play(audioCtx, 0.6);
+        } catch (e) { /* 効果音の失敗で操作を止めない */ }
+      }
+
+      /* ================= 数値ユーティリティ =================
+         小数は「整数のけた（d）と 小数点以下のけた数（p）」で持ち、
+         浮動小数点の誤差で判定がずれないようにする。 */
+      function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+      function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+      function shuffle(arr) {
+        var a = arr.slice();
+        for (var i = a.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+        return a;
+      }
+      function digitAtPos(n, k) { return Math.floor(n / Math.pow(10, k)) % 10; }
+      function numDigits(n) { return String(Math.abs(n)).length; }
+      // d（整数けた）と p（小数点以下のけた数）→ 表示文字列。末尾の0は生成時に作らない前提で、そのまま出す
+      function fmtDec(d, p) {
+        var s = String(d);
+        if (p === 0) return s;
+        while (s.length <= p) s = "0" + s;
+        return s.slice(0, s.length - p) + "." + s.slice(s.length - p);
+      }
+      // 積 P（整数）と 合計けた数 tp → 小数点を打った文字列（末尾0の処理前）
+      function rawAnswer(P, tp) {
+        var s = String(P);
+        if (tp === 0) return s;
+        while (s.length <= tp) s = "0" + s;
+        return s.slice(0, s.length - tp) + "." + s.slice(s.length - tp);
+      }
+      // 最終の答え（末尾の0を消し、整数なら整数で）
+      function finalAnswer(P, tp) {
+        var r = rawAnswer(P, tp);
+        if (r.indexOf(".") >= 0) {
+          r = r.replace(/0+$/, "").replace(/\.$/, "");
+        }
+        return r;
+      }
+      function placeName(k) {
+        var names = { 0: "1の位", 1: "10の位", 2: "100の位", 3: "1000の位", 4: "10000の位" };
+        return names[k] || "";
+      }
+
+      /* ================= 問題生成 ================= */
+      // 型の分類： 'int' 答えが整数 / 'trim' 末尾の0を消す / 'pad' 0を補う / 'normal'
+      function classify(P, tp) {
+        if (P % Math.pow(10, tp) === 0) return "int";
+        if (P % 10 === 0) return "trim";
+        if (String(P).length < tp) return "pad";
+        return "normal";
+      }
+      function genPair(kind, styleWanted) {
+        var last = null;
+        for (var t = 0; t < 300; t++) {
+          var da, pa, db, pb;
+          if (kind === "review") {
+            pa = pick([1, 1, 2]);
+            if (pa === 1) { do { da = randInt(12, 999); } while (da % 10 === 0); }
+            else { do { da = randInt(105, 999); } while (da % 10 === 0); }
+            db = randInt(2, 9); pb = 0;
+          } else if (kind === "basic") {
+            pa = 1; pb = 1;
+            do { da = randInt(2, 99); } while (da % 10 === 0);
+            do { db = randInt(2, 99); } while (db % 10 === 0);
+          } else { // step2
+            pa = 2;
+            do { da = randInt(12, 999); } while (da % 10 === 0);
+            pb = pick([1, 2]);
+            if (pb === 1) { do { db = randInt(2, 99); } while (db % 10 === 0); }
+            else { do { db = randInt(12, 99); } while (db % 10 === 0); }
+          }
+          var P = da * db, tp = pa + pb;
+          var st = classify(P, tp);
+          last = { da: da, pa: pa, db: db, pb: pb, style: st };
+          if (styleWanted === "any" || st === styleWanted) return last;
+        }
+        return last;
+      }
+      function makeProblem(type, kind, styleWanted) {
+        var g = genPair(kind, styleWanted);
+        return {
+          type: type, da: g.da, pa: g.pa, db: g.db, pb: g.pb,
+          P: g.da * g.db, tp: g.pa + g.pb,
+          aStr: fmtDec(g.da, g.pa), bStr: fmtDec(g.db, g.pb),
+          expr: fmtDec(g.da, g.pa) + " × " + fmtDec(g.db, g.pb)
+        };
+      }
+      function buildDeck(type) {
+        var problems = [], seen = {}, i, p;
+        function push(kind, style) {
+          for (var t = 0; t < 40; t++) {
+            p = makeProblem(type, kind, style);
+            if (!seen[p.expr]) { seen[p.expr] = true; problems.push(p); return; }
+          }
+          problems.push(p);
+        }
+        if (type === "review") {
+          for (i = 0; i < 10; i++) push("review", "any");
+        } else if (type === "basic" || type === "step2") {
+          var styles = shuffle(["pad", "int", "trim", "normal", "normal", "normal", "normal", "normal", "normal", "normal"]);
+          for (i = 0; i < 10; i++) push(type, styles[i]);
+        } else { // mix
+          var mstyles = shuffle(["pad", "int", "trim", "normal", "normal", "normal", "normal", "normal", "normal", "normal"]);
+          for (i = 0; i < 10; i++) push(pick(["basic", "step2"]), mstyles[i]);
+        }
+        return problems;
+      }
+
+      /* ================= ナビキャラ ================= */
+      var NAVI_WEB = "https://tt-sensei.github.io/navi-character-/assets/web/characters";
+      function naviImageHTML(naviId, pose) {
+        return '<img class="navi-avatar-img" src="' + NAVI_WEB + '/' + naviId +
+          '/fullbody/' + pose + '.webp" alt="" aria-hidden="true" decoding="async" onerror="this.parentElement.remove()">';
+      }
+      function naviHTML(naviId, pose, message) {
+        return '<span class="navi"><span class="navi-avatar">' + naviImageHTML(naviId, pose) +
+          '</span><span class="hint">' + message + '</span></span>';
+      }
+
+      /* ================= 画面と進行 ================= */
+      var VIEW_IDS = ["view-top", "view-quiz", "view-result", "view-records"];
+      function showView(id) {
+        VIEW_IDS.forEach(function (v) {
+          document.getElementById(v).classList.toggle("hidden", v !== id);
+        });
+        window.scrollTo(0, 0);
+      }
+      function $(id) { return document.getElementById(id); }
+
+      var session = null;   // {mode, type, problems, idx, flawless, cleared}
+      var cur = null;       // 現在の問題の作業状態
+
+      function setFeedback(kind, verdict, body, pose) {
+        var fb = $("feedback");
+        fb.className = "feedback" + (kind ? " " + kind : "");
+        var naviId = cur ? cur.naviId : "tsuki";
+        $("feedback-navi").innerHTML = '<span class="navi-avatar">' + naviImageHTML(naviId, pose || "hint") + "</span>";
+        $("feedback-verdict").textContent = verdict || "";
+        $("feedback-body").innerHTML = body || "";
+      }
+      function setAnswerBox(text, filled) {
+        var ab = $("answer-box");
+        ab.textContent = text;
+        ab.classList.toggle("filled", !!filled);
+      }
+      function setKeypadEnabled(on) {
+        var btns = document.querySelectorAll("#keypad button");
+        btns.forEach(function (b) {
+          var k = b.getAttribute("data-key");
+          b.disabled = !on || k === "." || k === "back";
+        });
+      }
+
+      /* ---------- セッション開始 ---------- */
+      function startPractice(type) {
+        session = { mode: "practice", type: type, problems: buildDeck(type), idx: 0, flawless: 0, cleared: 0 };
+        showView("view-quiz");
+        startProblem();
+        playSound("start");
+      }
+      function startTokkun() {
+        var mistakes = loadMistakes();
+        if (!mistakes.length) return;
+        var problems = mistakes.map(function (m) {
+          return {
+            type: m.type, da: m.da, pa: m.pa, db: m.db, pb: m.pb,
+            P: m.da * m.db, tp: m.pa + m.pb,
+            aStr: fmtDec(m.da, m.pa), bStr: fmtDec(m.db, m.pb), expr: m.expr
+          };
+        });
+        session = { mode: "tokkun", type: null, problems: problems, idx: 0, flawless: 0, cleared: 0 };
+        showView("view-quiz");
+        startProblem();
+        playSound("start");
+      }
+
+      function startProblem() {
+        var p = session.problems[session.idx];
+        var typeDef = TYPES[p.type];
+        cur = {
+          p: p, naviId: typeDef.naviId, naviName: typeDef.navi,
+          phase: "estimate", stageFlags: {}, estimateWrong: false,
+          steps: null, stepIdx: 0, filled: {}, consecErr: 0, ketaIdx: 0
+        };
+        $("progress-label").textContent = (session.idx + 1) + " / " + session.problems.length + " もん";
+        $("progress-fill").style.width = (session.idx / session.problems.length * 100) + "%";
+        $("quiz-navi").innerHTML = naviHTML(cur.naviId, "waving",
+          (session.mode === "tokkun" ? "とっくん： " : "") + typeDef.label);
+        $("problem-text").textContent = p.expr + " ＝ ？";
+        $("btn-next").classList.add("hidden");
+        renderEstimate();
+        setFeedback("", "", typeDef.hint + "。まずは 答えの 見当を つけよう。", "hint");
+      }
+
+      /* ---------- ステップ1：見当 ---------- */
+      function roughOf(P, tp) {
+        var s = String(P);
+        var first = Number(s[0]);
+        var second = s.length > 1 ? Number(s[1]) : 0;
+        var r = first * Math.pow(10, s.length - 1);
+        if (second >= 5) r += Math.pow(10, s.length - 1);
+        return r; // Pと同じ尺度（10^tp で割ると値になる）
+      }
+      function scaledStr(n, tp) { return finalAnswer(n, tp); }
+      function renderEstimate() {
+        var p = cur.p;
+        cur.phase = "estimate";
+        setKeypadEnabled(false);
+        var rough = roughOf(p.P, p.tp);
+        var choices = shuffle([
+          { v: rough, ok: true },
+          { v: rough * 10, ok: false },
+          { v: rough / 10, ok: false }
+        ]);
+        cur.rough = rough;
+        var html = '<span class="step-label">ステップ1：見当</span>' +
+          '<div class="step-prompt">答えは だいたい どれくらいに なりそう？</div><div class="choices">';
+        choices.forEach(function (c, i) {
+          html += '<button type="button" class="choice-btn" data-est="' + i + '">だいたい ' + scaledStr(c.v, p.tp) + ' くらい</button>';
+        });
+        html += "</div>";
+        $("stage-area").innerHTML = html;
+        setAnswerBox("見当を えらぼう", false);
+        var btns = document.querySelectorAll("[data-est]");
+        btns.forEach(function (b) {
+          b.addEventListener("click", function () {
+            var c = choices[Number(b.getAttribute("data-est"))];
+            if (c.ok) {
+              playSound("decide");
+              setFeedback("good", "いい見当！", "答えは だいたい " + scaledStr(rough, p.tp) + " くらいに なりそうだね。次は 筆算で 整数の かけ算を しよう。", "correct");
+            } else {
+              cur.estimateWrong = true;
+              playSound("near");
+              setFeedback("", "見当を たしかめよう",
+                p.aStr + " は だいたい " + roughFactor(p.da, p.pa) + "、" + p.bStr + " は だいたい " + roughFactor(p.db, p.pb) +
+                " と見ると、答えは だいたい " + scaledStr(rough, p.tp) + " くらいに なりそうだよ。この見当は、さいごに 小数点の 位置を 確かめる ときに 使うよ。", "hint");
+            }
+            renderHissanPhase();
+          });
+        });
+      }
+      function roughFactor(d, p) {
+        // かけられる数・かける数の「だいたいの値」（1けたに丸める）
+        var v = d / Math.pow(10, p);
+        if (v >= 10) return String(Math.round(v / 10) * 10);
+        if (v >= 1) return String(Math.round(v));
+        var s = String(d);
+        return finalAnswer(Number(s[0]) * Math.pow(10, s.length - 1), p);
+      }
+
+      /* ---------- ステップ2：筆算（整数として計算） ---------- */
+      function buildSteps(p) {
+        var steps = [];
+        var bLen = numDigits(p.db);
+        var rowVals = [];
+        for (var j = 0; j < bLen; j++) {
+          var d = digitAtPos(p.db, j);
+          rowVals.push(p.da * d);
+          var carry = 0, i = 0;
+          while (true) {
+            var aDigit = i < numDigits(p.da) ? digitAtPos(p.da, i) : 0;
+            var full = aDigit * d + carry;
+            steps.push({
+              kind: "mul", row: j, pos: j + i, expect: full % 10,
+              aDigit: aDigit, mult: d, carryIn: carry, full: full,
+              carryOut: Math.floor(full / 10)
+            });
+            carry = Math.floor(full / 10);
+            i++;
+            if (i >= numDigits(rowVals[j])) break;
+          }
+        }
+        if (bLen >= 2) {
+          var carry2 = 0;
+          for (var k = 0; k < numDigits(p.P); k++) {
+            var c0 = digitAtPos(rowVals[0], k);
+            var c1 = k >= 1 ? digitAtPos(rowVals[1], k - 1) : 0;
+            var total = c0 + c1 + carry2;
+            steps.push({ kind: "add", pos: k, expect: total % 10, c0: c0, c1: c1, carryIn: carry2, full: total, carryOut: Math.floor(total / 10) });
+            carry2 = Math.floor(total / 10);
+          }
+        }
+        return { steps: steps, rowVals: rowVals };
+      }
+      function renderHissanPhase() {
+        var p = cur.p;
+        cur.phase = "hissan";
+        var built = buildSteps(p);
+        cur.steps = built.steps; cur.rowVals = built.rowVals;
+        cur.stepIdx = 0; cur.filled = {}; cur.consecErr = 0;
+        setKeypadEnabled(true);
+        drawHissan();
+        setFeedback("", "", "小数点は 気にせず、" + p.da + " × " + p.db + " として 計算しよう。光っている マスに 数字を 入れてね。", "hint");
+      }
+      function drawHissan() {
+        var p = cur.p;
+        var W = numDigits(p.P);
+        var step = cur.steps[cur.stepIdx];
+        var html = '<span class="step-label">ステップ2：筆算</span>' +
+          '<div class="step-prompt">' + p.da + " × " + p.db + " を 計算しよう（小数点は まだ つけない）</div>" +
+          '<div class="hissan"><div class="h-grid" style="grid-template-columns: 30px repeat(' + W + ', var(--cell));">';
+        function cell(content, cls) { return '<span class="h-cell ' + (cls || "") + '">' + (content === "" || content == null ? "&nbsp;" : content) + "</span>"; }
+        function signCell(content) { return '<span class="h-cell sign">' + (content || "&nbsp;") + "</span>"; }
+        var k, j;
+        // くり上がり行
+        html += signCell("");
+        for (k = W - 1; k >= 0; k--) {
+          var show = step && step.pos === k && step.carryIn > 0 ? step.carryIn : "";
+          html += cell(show, "carry");
+        }
+        // かける数（da）
+        html += signCell("");
+        for (k = W - 1; k >= 0; k--) html += cell(k < numDigits(p.da) ? digitAtPos(p.da, k) : "");
+        // かけられる数（db）
+        html += signCell("×");
+        for (k = W - 1; k >= 0; k--) html += cell(k < numDigits(p.db) ? digitAtPos(p.db, k) : "");
+        html += '<div class="h-line" style="grid-column: 1 / -1;"></div>';
+        // 部分積の行
+        var bLen = numDigits(p.db);
+        for (j = 0; j < bLen; j++) {
+          html += signCell("");
+          for (k = W - 1; k >= 0; k--) {
+            var key = "r" + j + "p" + k;
+            var isTarget = step && step.kind === "mul" && step.row === j && step.pos === k;
+            if (cur.filled[key] != null) html += cell(cur.filled[key], "filled");
+            else if (isTarget) html += cell("", "target");
+            else html += cell("");
+          }
+        }
+        // 合計行（部分積が2行のとき）
+        if (bLen >= 2) {
+          html += '<div class="h-line" style="grid-column: 1 / -1;"></div>';
+          html += signCell("");
+          for (k = W - 1; k >= 0; k--) {
+            var pkey = "P" + k;
+            var isT = step && step.kind === "add" && step.pos === k;
+            if (cur.filled[pkey] != null) html += cell(cur.filled[pkey], "filled");
+            else if (isT) html += cell("", "target");
+            else html += cell("");
+          }
+        }
+        html += "</div></div>";
+        html += '<div class="h-note" id="h-note"></div>';
+        $("stage-area").innerHTML = html;
+        updateHissanNote();
+      }
+      function updateHissanNote() {
+        var step = cur.steps[cur.stepIdx];
+        var note = $("h-note");
+        if (!step || !note) return;
+        if (step.kind === "mul") {
+          note.textContent = digitAtPos(cur.p.db, step.row) + " の段：" + placeName(step.pos - step.row) + " の 計算";
+          setAnswerBox("いまの マス：" + placeName(step.pos) + "（" + digitAtPos(cur.p.db, step.row) + " の段）", false);
+        } else {
+          note.textContent = "2つの 行を たそう：" + placeName(step.pos);
+          setAnswerBox("いまの マス：" + placeName(step.pos) + "（たし算）", false);
+        }
+      }
+      function onKeyDigit(d) {
+        if (!cur || cur.phase !== "hissan") return;
+        var step = cur.steps[cur.stepIdx];
+        if (!step) return;
+        if (d === step.expect) {
+          var key = step.kind === "mul" ? "r" + step.row + "p" + step.pos : "P" + step.pos;
+          cur.filled[key] = d;
+          cur.stepIdx++;
+          cur.consecErr = 0;
+          if (cur.stepIdx >= cur.steps.length) {
+            playSound("correct");
+            drawHissan();
+            finishHissan();
+          } else {
+            playSound("click");
+            drawHissan();
+          }
+        } else {
+          cur.stageFlags.hissan = true;
+          cur.consecErr++;
+          playSound("wrong");
+          var grid = document.querySelector(".h-grid");
+          if (grid) { grid.classList.remove("anim-shake"); void grid.offsetWidth; grid.classList.add("anim-shake"); }
+          var body;
+          if (cur.consecErr >= 2) {
+            if (step.kind === "mul") {
+              body = step.aDigit + " × " + step.mult + " ＝ " + (step.aDigit * step.mult) +
+                "。くり上がりの " + step.carryIn + " を たすと " + step.full +
+                "。書くのは " + step.expect + " で、次への くり上がりは " + step.carryOut + " だよ。";
+            } else {
+              body = step.c0 + " ＋ " + step.c1 + " ＋ くり上がり " + step.carryIn + " ＝ " + step.full +
+                "。書くのは " + step.expect + " だよ。";
+            }
+          } else {
+            body = step.kind === "mul"
+              ? "おしい！ " + step.aDigit + " × " + step.mult + " と、くり上がりを よく 見てね。"
+              : "おしい！ 上下の 数字と くり上がりを よく 見てね。";
+          }
+          setFeedback("bad", "おしい！", body, "retry");
+        }
+      }
+
+      /* ---------- ステップ3：小数点の位置を確かめる ---------- */
+      function finishHissan() {
+        setKeypadEnabled(false);
+        setFeedback("good", "筆算できた！", "整数の かけ算の 答えは " + cur.p.P + " だね。でも、まだ 小数点が ついていないよ。次は 小数点の 位置を 自分で 確かめよう。", "correct");
+        renderKeta();
+      }
+      function ketaQuestions() {
+        var p = cur.p;
+        return [
+          { q: p.aStr + " の 小数点の 右は 何けた？", choices: [0, 1, 2], ans: p.pa },
+          { q: p.bStr + " の 小数点の 右は 何けた？", choices: [0, 1, 2], ans: p.pb },
+          { q: "2つ 合わせると 何けた？", choices: shuffle([p.tp - 1, p.tp, p.tp + 1].filter(function (v, i, a) { return v >= 0 && a.indexOf(v) === i; })), ans: p.tp }
+        ];
+      }
+      function renderKeta() {
+        cur.phase = "keta";
+        cur.ketaIdx = 0;
+        cur.ketaQs = ketaQuestions();
+        drawKeta();
+      }
+      function drawKeta() {
+        var p = cur.p;
+        var q = cur.ketaQs[cur.ketaIdx];
+        var html = '<span class="step-label">ステップ3：小数点の 位置を 確かめる</span>' +
+          '<div class="step-prompt">筆算の 答え（整数のまま）は <b>' + p.P + '</b>。小数点の 位置を 決めるために、けたを 数えよう。</div>' +
+          '<div class="step-prompt">' + q.q + '</div><div class="choices">';
+        q.choices.forEach(function (c, i) {
+          html += '<button type="button" class="choice-btn" data-keta="' + i + '">' + c + " けた</button>";
+        });
+        html += "</div>";
+        $("stage-area").innerHTML = html;
+        setAnswerBox("けたを 数えよう（" + (cur.ketaIdx + 1) + " / 3）", false);
+        document.querySelectorAll("[data-keta]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var c = q.choices[Number(b.getAttribute("data-keta"))];
+            if (c === q.ans) {
+              playSound("decide");
+              cur.ketaIdx++;
+              if (cur.ketaIdx >= cur.ketaQs.length) {
+                setFeedback("good", "数えられた！", "小数点の 右は 合わせて " + p.tp + " けた。次は、" + p.P + " の 右から " + p.tp + " けたの ところに 小数点を 打とう。", "correct");
+                renderPoint();
+              } else {
+                setFeedback("", "", "その通り。" + cur.ketaQs[cur.ketaIdx].q.replace("？", " を 数えよう。"), "hint");
+                drawKeta();
+              }
+            } else {
+              cur.stageFlags.keta = true;
+              playSound("wrong");
+              var hint = cur.ketaIdx < 2
+                ? "小数点の 右側に ある 数字の 数を 数えてね。" + (cur.ketaIdx === 0 ? p.aStr : p.bStr) + " の 小数点の 右を よく 見てね。"
+                : p.aStr + " は " + p.pa + " けた、" + p.bStr + " は " + p.pb + " けた。合わせると 何けたに なるかな？";
+              setFeedback("bad", "おしい！", hint, "retry");
+            }
+          });
+        });
+      }
+
+      /* ---------- ステップ3つづき：小数点を打つ ---------- */
+      function renderPoint() {
+        cur.phase = "point";
+        var p = cur.p;
+        var S = String(p.P);
+        while (S.length <= p.tp) S = "0" + S;
+        cur.pointStr = S;
+        cur.correctGap = S.length - p.tp; // 左から何文字の後か
+        var html = '<span class="step-label">ステップ3：小数点を 打つ</span>' +
+          '<div class="step-prompt">右から ' + p.tp + ' けたの ところを タップして、小数点を 打とう。</div>' +
+          '<div class="point-stage"><div class="point-row" id="point-row">';
+        for (var i = 0; i < S.length; i++) {
+          if (i > 0) html += '<button type="button" class="p-gap" data-gap="' + i + '" aria-label="左から' + i + '文字の後"></button>';
+          html += '<span class="p-digit' + (S[i] === "0" && i < cur.correctGap && i === 0 ? " zero" : "") + '">' + S[i] + "</span>";
+        }
+        html += "</div></div>";
+        $("stage-area").innerHTML = html;
+        setAnswerBox("小数点を 打つ 場所を タップ", false);
+        document.querySelectorAll("[data-gap]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var g = Number(b.getAttribute("data-gap"));
+            if (g === cur.correctGap) {
+              playSound("correct");
+              finishProblem();
+            } else {
+              cur.stageFlags.point = true;
+              playSound("wrong");
+              var right = S.length - g;
+              setFeedback("bad", "おしい！",
+                "そこだと 小数点の 右が " + right + " けたに なってしまうよ。合わせて " + p.tp +
+                " けたに なる 場所を さがそう。見当は だいたい " + scaledStr(cur.rough, p.tp) + " くらいだったね。", "retry");
+            }
+          });
+        });
+      }
+
+      /* ---------- 問題の完了 ---------- */
+      function finishProblem() {
+        var p = cur.p;
+        cur.phase = "done";
+        var raw = rawAnswer(p.P, p.tp);
+        var ans = finalAnswer(p.P, p.tp);
+        var S = cur.pointStr;
+        var html = '<span class="step-label">ステップ3：小数点を 打つ</span>' +
+          '<div class="point-stage"><div class="point-row">';
+        for (var i = 0; i < S.length; i++) {
+          if (i > 0) html += (i === cur.correctGap ? '<span class="p-point">.</span>' : '<span class="p-gap" style="cursor:default"></span>');
+          html += '<span class="p-digit">' + S[i] + "</span>";
+        }
+        html += "</div>";
+        if (raw !== ans) {
+          html += '<div class="p-trim">' + raw + " の うしろの 0 は 消せるね → <b>" + ans + "</b></div>";
+        }
+        html += "</div>";
+        $("stage-area").innerHTML = html;
+        setAnswerBox(p.expr + " ＝ " + ans, true);
+
+        var flawless = !cur.stageFlags.hissan && !cur.stageFlags.keta && !cur.stageFlags.point;
+        var body;
+        if (raw !== ans && ans.indexOf(".") < 0) {
+          body = "小数点の 右が 全部 0に なったから、答えは 整数の " + ans + " だね。";
+        } else if (raw !== ans) {
+          body = raw + " の さいごの 0を 消して、答えは " + ans + "。";
+        } else {
+          body = "答えは " + ans + "。";
+        }
+        body += cur.estimateWrong
+          ? "見当は だいたい " + scaledStr(cur.rough, p.tp) + " くらいだったね。大きさの 感じを つかんでいこう。"
+          : "見当（だいたい " + scaledStr(cur.rough, p.tp) + " くらい）と 合っているね。";
+        if (flawless) {
+          setFeedback("good", "せいかい！ ノーミス！", body, "complete");
+          playSound("clear");
+        } else {
+          setFeedback("good", "せいかい！", body + " 途中で つまずいた ところは、あとで とっくんで もう一度 見よう。", "correct");
+        }
+        recordOutcome(flawless);
+        if (flawless) session.flawless++;
+        if (session.mode === "tokkun" && flawless) session.cleared++;
+        $("btn-next").classList.remove("hidden");
+        $("btn-next").textContent = session.idx + 1 >= session.problems.length ? "けっかへ →" : "つぎへ →";
+        $("progress-fill").style.width = ((session.idx + 1) / session.problems.length * 100) + "%";
+      }
+      function recordOutcome(flawless) {
+        var p = cur.p;
+        var stages = Object.keys(cur.stageFlags).filter(function (k) { return cur.stageFlags[k]; });
+        if (session.mode === "practice") {
+          var stats = loadStats();
+          stats[p.type].total += 1;
+          if (flawless) stats[p.type].correct += 1;
+          saveJSON(LS_STATS, stats);
+          if (!flawless) {
+            var mistakes = loadMistakes();
+            var rec = null;
+            for (var i = 0; i < mistakes.length; i++) {
+              if (mistakes[i].type === p.type && mistakes[i].expr === p.expr) { rec = mistakes[i]; break; }
+            }
+            if (rec) { rec.stages = stages; }
+            else mistakes.push({ type: p.type, da: p.da, pa: p.pa, db: p.db, pb: p.pb, expr: p.expr, stages: stages });
+            saveJSON(LS_MISTAKES, mistakes);
+          }
+        } else { // tokkun
+          var ms = loadMistakes();
+          if (flawless) {
+            ms = ms.filter(function (m) { return !(m.type === p.type && m.expr === p.expr); });
+          } else {
+            for (var j = 0; j < ms.length; j++) {
+              if (ms[j].type === p.type && ms[j].expr === p.expr) ms[j].stages = stages;
+            }
+          }
+          saveJSON(LS_MISTAKES, ms);
+        }
+      }
+      function nextProblem() {
+        session.idx++;
+        if (session.idx >= session.problems.length) showResult();
+        else startProblem();
+      }
+      function showResult() {
+        showView("view-result");
+        var n = session.problems.length;
+        var mistakes = loadMistakes();
+        if (session.mode === "practice") {
+          $("result-title").textContent = n + "もん中 " + session.flawless + "もん ノーミス！";
+          $("result-msg").innerHTML = session.flawless === n
+            ? "全問 ノーミス、すごい！ 小数点の 位置まで ばっちり 確かめられたね。"
+            : "まちがえた 問題は とっくんに 入ったよ。とっくんで 正解すると きえるよ。";
+          $("btn-result-tokkun").classList.toggle("hidden", mistakes.length === 0);
+          $("btn-again").textContent = "もう一度 れんしゅう";
+        } else {
+          $("result-title").textContent = "とっくん " + n + "もん中 " + session.cleared + "もん クリア！";
+          $("result-msg").innerHTML = mistakes.length === 0
+            ? "とっくんの 問題が 全部 きえたよ。よく がんばったね！"
+            : "のこりは " + mistakes.length + " もん。また とっくんで チャレンジしよう。";
+          $("btn-result-tokkun").classList.toggle("hidden", mistakes.length === 0);
+          $("btn-again").textContent = "もう一度 とっくん";
+        }
+        playSound("practice");
+        renderTokkunBadge();
+      }
+
+      /* ---------- トップ・記録 ---------- */
+      function renderTop() {
+        var grid = $("type-grid");
+        grid.innerHTML = "";
+        TYPE_KEYS.forEach(function (key) {
+          var t = TYPES[key];
+          var btn = document.createElement("button");
+          btn.className = "type-card";
+          btn.style.setProperty("--tc", t.color);
+          btn.innerHTML = '<span class="tc-label">' + t.label + '</span><span class="tc-desc">' + t.desc +
+            '</span><span class="tc-navi"><span class="navi-avatar" style="width:34px;height:44px;">' + naviImageHTML(t.naviId, "waving") + "</span>案内：" + t.navi + "</span>";
+          btn.addEventListener("click", function () { startPractice(key); });
+          grid.appendChild(btn);
+        });
+        renderTokkunBadge();
+      }
+      function renderTokkunBadge() {
+        var n = loadMistakes().length;
+        var badge = $("tokkun-count");
+        badge.textContent = n;
+        badge.classList.toggle("hidden", n === 0);
+        $("btn-tokkun").style.opacity = n === 0 ? ".55" : "1";
+      }
+      var STAGE_NAMES = { hissan: "筆算", keta: "けた数", point: "小数点の位置" };
+      function renderRecords() {
+        var stats = loadStats();
+        var mistakes = loadMistakes();
+        var grid = $("stat-grid");
+        grid.innerHTML = "";
+        TYPE_KEYS.forEach(function (key) {
+          var t = TYPES[key];
+          var s = stats[key];
+          var pending = mistakes.filter(function (m) { return m.type === key; });
+          var stageText = "";
+          if (pending.length) {
+            var counts = {};
+            pending.forEach(function (m) {
+              (m.stages || []).forEach(function (st) { counts[st] = (counts[st] || 0) + 1; });
+            });
+            var parts = Object.keys(counts).map(function (st) { return STAGE_NAMES[st] + " " + counts[st] + "件"; });
+            stageText = "<p>とっくん中：<b>" + pending.length + " もん</b>（" + parts.join("、") + "）</p>";
+          }
+          var card = document.createElement("div");
+          card.className = "stat-card";
+          card.style.setProperty("--tc", t.color);
+          card.innerHTML = "<h3>" + t.label + "</h3>" +
+            "<p>といた 問題：<b>" + s.total + " もん</b></p>" +
+            "<p>ノーミス：<b>" + s.correct + " もん</b></p>" + stageText +
+            "<p>" + t.explain + "</p>";
+          grid.appendChild(card);
+        });
+        showView("view-records");
+      }
+
+      /* ---------- 初期化 ---------- */
+      document.querySelectorAll("#keypad button").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var k = b.getAttribute("data-key");
+          if (/^[0-9]$/.test(k)) onKeyDigit(Number(k));
+        });
+      });
+      $("btn-next").addEventListener("click", nextProblem);
+      $("btn-quit").addEventListener("click", function () { renderTop(); showView("view-top"); });
+      $("btn-tokkun").addEventListener("click", function () { if (loadMistakes().length) startTokkun(); });
+      $("btn-records").addEventListener("click", renderRecords);
+      $("btn-records-back").addEventListener("click", function () { renderTop(); showView("view-top"); });
+      $("btn-again").addEventListener("click", function () {
+        if (session && session.mode === "tokkun") startTokkun();
+        else if (session) startPractice(session.type);
+      });
+      $("btn-result-tokkun").addEventListener("click", function () { if (loadMistakes().length) startTokkun(); });
+      $("btn-result-top").addEventListener("click", function () { renderTop(); showView("view-top"); });
+      $("btn-sound").addEventListener("click", function () {
+        settings.sound = !settings.sound;
+        saveSettings();
+        renderSoundBtn();
+        if (settings.sound) playSound("decide");
+      });
+      renderSoundBtn();
+      renderTop();
+    </script>
+  </body>
+</html>
