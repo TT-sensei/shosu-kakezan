@@ -122,12 +122,14 @@
       .point-row { display: flex; align-items: center; gap: 0; }
       .p-digit { width: 54px; height: 64px; border: 3px solid var(--line); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 900; background: #fff; }
       .p-digit.zero { color: #b9b2d6; }
-      .p-gap { width: 26px; height: 64px; border: none; background: transparent; cursor: pointer; position: relative; padding: 0; }
+      .p-gap { width: 36px; height: 64px; border: none; background: transparent; cursor: pointer; position: relative; padding: 0; }
       .p-gap::after { content: ""; position: absolute; left: 50%; top: 8px; bottom: 8px; width: 4px; margin-left: -2px; border-radius: 2px; background: var(--primary-soft); }
       .p-gap:hover::after, .p-gap:focus-visible::after { background: var(--amber); }
       .p-gap.placed::after { background: transparent; }
-      .p-point { font-size: 40px; font-weight: 900; color: var(--bad); width: 26px; text-align: center; }
+      .p-point { font-size: 40px; font-weight: 900; color: var(--bad); width: 36px; text-align: center; }
       .p-trim { font-size: 15px; color: var(--muted); }
+      .p-why { background: var(--primary-soft); border-radius: 12px; padding: 8px 16px; font-size: 15px; line-height: 1.9; text-align: center; max-width: 660px; }
+      .p-why b { color: var(--primary-dark); }
       .p-trim s { color: var(--bad); }
 
       .quiz-controls { display: flex; flex-direction: column; gap: 12px; }
@@ -229,7 +231,7 @@
           </button>
           <button class="menu-btn" id="btn-records">
             れんしゅうの きろく
-            <small>種類ごとに、といた 問題数と ノーミス数が 見られます。</small>
+            <small>種類ごとに、といた 問題数と 手順ノーミス数が 見られます。</small>
           </button>
         </div>
 
@@ -266,9 +268,9 @@
                 <button type="button" data-key="7">7</button>
                 <button type="button" data-key="8">8</button>
                 <button type="button" data-key="9">9</button>
-                <button type="button" data-key="." aria-label="小数点" disabled>.</button>
+                <span aria-hidden="true"></span>
                 <button type="button" data-key="0">0</button>
-                <button type="button" class="util" data-key="back" aria-label="もどる" disabled>けす</button>
+                <span aria-hidden="true"></span>
               </div>
               <div class="actions">
                 <button class="btn primary hidden" id="btn-next">つぎへ →</button>
@@ -465,7 +467,43 @@
         if (String(P).length < tp) return "pad";
         return "normal";
       }
+      /* 特殊な型（int／trim／pad）は、条件を満たす組み合わせを全数列挙した候補から選ぶ。
+         ランダム探索では、組み合わせの少ない型（例：小数第2位×小数で答えが整数になる型は、
+         かけ数が小数第2位の場合で5通りしかない）がほとんど生成されないため。 */
+      var pairPools = {};
+      function buildPools(kind) {
+        if (pairPools[kind]) return pairPools[kind];
+        var byPb = {};
+        function add(da, pa, db, pb) {
+          var st = classify(da * db, pa + pb);
+          if (!byPb[pb]) byPb[pb] = { int: [], trim: [], pad: [], normal: [] };
+          byPb[pb][st].push({ da: da, pa: pa, db: db, pb: pb, style: st });
+        }
+        var a, b;
+        if (kind === "basic") {
+          for (a = 2; a <= 99; a++) { if (a % 10 === 0) continue;
+            for (b = 2; b <= 99; b++) { if (b % 10 !== 0) add(a, 1, b, 1); } }
+        } else { // step2
+          for (a = 12; a <= 999; a++) { if (a % 10 === 0) continue;
+            for (b = 2; b <= 99; b++) { if (b % 10 !== 0) add(a, 2, b, 1); }
+            for (b = 12; b <= 99; b++) { if (b % 10 !== 0) add(a, 2, b, 2); } }
+        }
+        pairPools[kind] = byPb;
+        return byPb;
+      }
       function genPair(kind, styleWanted) {
+        if (kind !== "review" && styleWanted !== "any") {
+          var byPb = buildPools(kind);
+          var pb = kind === "basic" ? 1 : pick([1, 2]);
+          var pool = byPb[pb] && byPb[pb][styleWanted];
+          if (pool && pool.length) {
+            var g = pick(pool);
+            return { da: g.da, pa: g.pa, db: g.db, pb: g.pb, style: g.style };
+          }
+        }
+        return genPairSearch(kind, styleWanted);
+      }
+      function genPairSearch(kind, styleWanted) {
         var last = null;
         for (var t = 0; t < 300; t++) {
           var da, pa, db, pb;
@@ -563,7 +601,7 @@
         var btns = document.querySelectorAll("#keypad button");
         btns.forEach(function (b) {
           var k = b.getAttribute("data-key");
-          b.disabled = !on || k === "." || k === "back";
+          b.disabled = !on;
         });
       }
 
@@ -643,13 +681,14 @@
             var c = choices[Number(b.getAttribute("data-est"))];
             if (c.ok) {
               playSound("decide");
-              setFeedback("good", "いい見当！", "答えは だいたい " + scaledStr(rough, p.tp) + " くらいに なりそうだね。次は 筆算で 整数の かけ算を しよう。", "correct");
+              cur.estMsg = { kind: "good", verdict: "いい見当！", pose: "correct",
+                body: "答えは だいたい " + scaledStr(rough, p.tp) + " くらいに なりそうだね。" };
             } else {
               cur.estimateWrong = true;
               playSound("near");
-              setFeedback("", "見当を たしかめよう",
-                p.aStr + " は だいたい " + roughFactor(p.da, p.pa) + "、" + p.bStr + " は だいたい " + roughFactor(p.db, p.pb) +
-                " と見ると、答えは だいたい " + scaledStr(rough, p.tp) + " くらいに なりそうだよ。この見当は、さいごに 小数点の 位置を 確かめる ときに 使うよ。", "hint");
+              cur.estMsg = { kind: "", verdict: "見当を たしかめよう", pose: "hint",
+                body: p.aStr + " は だいたい " + roughFactor(p.da, p.pa) + "、" + p.bStr + " は だいたい " + roughFactor(p.db, p.pb) +
+                " と見ると、答えは だいたい " + scaledStr(rough, p.tp) + " くらいに なりそうだよ。この見当は、さいごに 小数点の 位置を 確かめる ときに 使うよ。" };
             }
             renderHissanPhase();
           });
@@ -706,7 +745,13 @@
         cur.stepIdx = 0; cur.filled = {}; cur.consecErr = 0;
         setKeypadEnabled(true);
         drawHissan();
-        setFeedback("", "", "小数点は 気にせず、" + p.da + " × " + p.db + " として 計算しよう。光っている マスに 数字を 入れてね。", "hint");
+        if (cur.estMsg) {
+          setFeedback(cur.estMsg.kind, cur.estMsg.verdict,
+            cur.estMsg.body + "次は 筆算で、" + p.da + " × " + p.db + " として 計算しよう（小数点は まだ つけない）。光っている マスに 数字を 入れてね。",
+            cur.estMsg.pose);
+        } else {
+          setFeedback("", "", "小数点は 気にせず、" + p.da + " × " + p.db + " として 計算しよう。光っている マスに 数字を 入れてね。", "hint");
+        }
       }
       function drawHissan() {
         var p = cur.p;
@@ -907,6 +952,19 @@
         });
       }
 
+      /* 小数点の位置の「わけ」：○○は整数を10や100で割った数、という考え方を、その問題の数で示す */
+      function whyHTML(p) {
+        if (p.pb === 0) {
+          return '<div class="p-why">わけ： かける数（' + p.bStr + '）が 整数の ときは、答えの 小数点の 右の けた数は、' +
+            p.aStr + ' と 同じ <b>' + p.pa + 'けた</b>に なるよ。</div>';
+        }
+        var powA = Math.pow(10, p.pa), powB = Math.pow(10, p.pb), powT = Math.pow(10, p.tp);
+        return '<div class="p-why">わけ： ' + p.aStr + ' は ' + p.da + ' を <b>' + powA + 'で わった</b> 数、' +
+          p.bStr + ' は ' + p.db + ' を <b>' + powB + 'で わった</b> 数。<br>' +
+          'だから 答えは ' + p.da + ' × ' + p.db + ' ＝ <b>' + p.P + '</b> を <b>' + powT + 'で わった</b> 数に なる。' +
+          '小数点の 右は ' + p.pa + 'けた ＋ ' + p.pb + 'けた ＝ <b>' + p.tp + 'けた</b>だね。</div>';
+      }
+
       /* ---------- 問題の完了 ---------- */
       function finishProblem() {
         var p = cur.p;
@@ -924,6 +982,7 @@
         if (raw !== ans) {
           html += '<div class="p-trim">' + raw + " の うしろの 0 は 消せるね → <b>" + ans + "</b></div>";
         }
+        html += whyHTML(p);
         html += "</div>";
         $("stage-area").innerHTML = html;
         setAnswerBox(p.expr + " ＝ " + ans, true);
@@ -941,7 +1000,7 @@
           ? "見当は だいたい " + scaledStr(cur.rough, p.tp) + " くらいだったね。大きさの 感じを つかんでいこう。"
           : "見当（だいたい " + scaledStr(cur.rough, p.tp) + " くらい）と 合っているね。";
         if (flawless) {
-          setFeedback("good", "せいかい！ ノーミス！", body, "complete");
+          setFeedback("good", "せいかい！ 計算の手順 ノーミス！", body, "complete");
           playSound("clear");
         } else {
           setFeedback("good", "せいかい！", body + " 途中で つまずいた ところは、あとで とっくんで もう一度 見よう。", "correct");
@@ -993,9 +1052,9 @@
         var n = session.problems.length;
         var mistakes = loadMistakes();
         if (session.mode === "practice") {
-          $("result-title").textContent = n + "もん中 " + session.flawless + "もん ノーミス！";
+          $("result-title").textContent = n + "もん中 " + session.flawless + "もん 手順ノーミス！";
           $("result-msg").innerHTML = session.flawless === n
-            ? "全問 ノーミス、すごい！ 小数点の 位置まで ばっちり 確かめられたね。"
+            ? "全問 手順ノーミス、すごい！ 小数点の 位置まで ばっちり 確かめられたね。"
             : "まちがえた 問題は とっくんに 入ったよ。とっくんで 正解すると きえるよ。";
           $("btn-result-tokkun").classList.toggle("hidden", mistakes.length === 0);
           $("btn-again").textContent = "もう一度 れんしゅう";
@@ -1058,7 +1117,7 @@
           card.style.setProperty("--tc", t.color);
           card.innerHTML = "<h3>" + t.label + "</h3>" +
             "<p>といた 問題：<b>" + s.total + " もん</b></p>" +
-            "<p>ノーミス：<b>" + s.correct + " もん</b></p>" + stageText +
+            "<p>手順ノーミス：<b>" + s.correct + " もん</b></p>" + stageText +
             "<p>" + t.explain + "</p>";
           grid.appendChild(card);
         });
